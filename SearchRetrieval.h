@@ -10,10 +10,22 @@ using namespace std;
 
 class SearchRetrieval {
 public:
-    SearchRetrieval();  // Constructor
-    ~SearchRetrieval(); // Destructor
+    SearchRetrieval()  // Constructor
+    {
+        // Logic here
+    };
+    
+    ~SearchRetrieval() // Destructor
+    {
+        // Logic here
+    };
+    
 
-    void searchEmails(); // Search functionality for inbox, outbox, and spam
+    void searchEmails() // Search functionality for inbox, outbox, and spam
+    {
+        // Logic here
+    };
+    
 };
 
 #endif
