@@ -25,16 +25,39 @@ private:
     PriorityNode* priorityFront; // Priority Queue for important emails
 
 public:
-    SpamPriority();  // Constructor
-    ~SpamPriority(); // Destructor
+    SpamPriority()  // Constructor
+    {
+        // Logic here
+    };
+
+    ~SpamPriority() // Destructor
+    {
+        // Logic here
+    };
 
     // Spam handling
-    void markAsSpam(const Email& email);  // Enqueue to spam (queue)
-    void displaySpam();                   // Dequeue and display spam emails (queue)
+    void markAsSpam(const Email& email)  // Enqueue to spam (queue)
+    {
+        // Logic here
+    };
+
+    void displaySpam()                   // Dequeue and display spam emails (queue)
+    {
+        // Logic here
+    };
+    
 
     // Priority mail handling
-    void prioritizeEmail(const Email& email);   // Insert email in priority queue
-    void displayPriorityMails();                // Display and remove priority emails
+    void prioritizeEmail(const Email& email)   // Insert email in priority queue
+    {
+        // Logic here
+    };
+    
+    void displayPriorityMails()                // Display and remove priority emails
+    {
+        // Logic here
+    };
+    
 };
 
 #endif
