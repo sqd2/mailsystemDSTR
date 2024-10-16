@@ -97,6 +97,8 @@ void showMenu(InboxOutbox& inboxOutbox, SpamPriority& spamPriority, SearchRetrie
         cout << "5. Priority Mail" << endl;
         cout << "6. Search Emails" << endl;
         cout << "7. Logout" << endl;
+        cout << "Enter your choice: ";
+
 
         int choice;
         cin >> choice;
