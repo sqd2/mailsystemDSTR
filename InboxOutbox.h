@@ -20,16 +20,40 @@ private:
     Node* outboxRear;
 
 public:
-    InboxOutbox();  // Constructor
-    ~InboxOutbox(); // Destructor
+    InboxOutbox()  // Constructor
+    {
+        // Logic here
+    };
+    
+    ~InboxOutbox() // Destructor
+    {
+        // Logic here
+    };
+    
 
     // Inbox management (LIFO)
-    void receiveEmail(const Email& email); // Push to inbox (stack)
-    void displayInbox();                   // Pop and display inbox emails (stack)
+    void receiveEmail(const Email& email) // Push to inbox (stack)
+    {
+        // Logic here
+    };
+    
+    void displayInbox()                   // Pop and display inbox emails (stack)
+    {
+        // Logic here
+    };
+    
 
     // Outbox management (FIFO)
-    void sendMail();         // Enqueue to outbox (queue)
-    void displayOutbox();     // Dequeue and display sent mails (queue)
+    void sendMail()         // Enqueue to outbox (queue)
+    {
+        // Logic here
+    };
+    
+    void displayOutbox()     // Dequeue and display sent mails (queue)
+    {
+        // Logic here
+    };
+    
 };
 
 #endif
