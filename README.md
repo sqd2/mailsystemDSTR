@@ -1,4 +1,4 @@
-List of file:
+List of files(divided based on the roles we chose):
 
 1. main.cpp
 Handles user interface, login/signup, and the main menu to navigate between Inbox, Send Mail, Spam, Priority Mail, Search, and Logout.
