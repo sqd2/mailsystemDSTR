@@ -22,3 +22,6 @@ Contains:
 searchEmails() (Search emails in inbox, outbox, and spam)
 5. Email.h
 Defines the Email structure with fields like sender, subject, content, and priority.
+
+For now, the login function kinda works, storing the credentials in a text file users.txt
+
