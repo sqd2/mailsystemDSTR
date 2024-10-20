@@ -10,5 +10,5 @@ struct Email {
     string content;
     int priority; // Lower number = higher priority
 };
-
+    //test
 #endif
