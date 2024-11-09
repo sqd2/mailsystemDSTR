@@ -1,0 +1,14 @@
+alice@example.com,bob@example.com,Meeting Update,"Hi Bob, please find the latest meeting updates attached.",1672502400,1
+charlie@example.com,david@example.com,Project Deadline,"The project deadline is next week. Please make sure everything is on track.",1672588800,1
+eve@example.com,frank@example.com,Spam Offer,"You won a million dollars! Click here to claim.",1672675200,0
+alice@example.com,grace@example.com,Hello,"Just wanted to say hi!",1672761600,1
+hank@example.com,ivy@example.com,Job Opportunity,"There's a job opportunity I think you’d be interested in.",1672848000,1
+jane@example.com,karl@example.com,Spam Notice,"Important: Free prize inside! Don’t miss out.",1672934400,0
+lucy@example.com,mark@example.com,Report Submission,"Please submit your report by the end of this week.",1673020800,1
+nancy@example.com,oscar@example.com,Follow-up,"Just following up on the previous discussion.",1673107200,1
+peter@example.com,quincy@example.com,Spam Email,"Congratulations! You've been selected for a free vacation.",1673193600,0
+rachel@example.com,sam@example.com,Check-In,"Just checking in, hope everything is going well.",1673281200,1
+sender1@example.com,recipient1@example.com,Subject 1,"Hey, I like cake.",1609459200,1
+sender2@example.com,recipient2@example.com,Subject 2,"Important update, please review.",1612137600,0
+sender3@example.com,recipient3@example.com,Subject 3,"Meeting at 3 PM, don't forget!",1609545600,1
+sender4@example.com,recipient4@example.com,Subject 4,"Report submission, all done.",1612723200,0
