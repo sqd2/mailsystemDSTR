@@ -112,33 +112,51 @@ public:
     }
 };
 
+
+
 class SearchRetrieval {
 private:
     Email* emailArray;       // Dynamic array of emails
     int emailCount;          // Number of emails in the array
+    bool emailsLoaded;       // Flag to check if emails are loaded
 
 public:
-    SearchRetrieval() : emailArray(nullptr), emailCount(0) {}
+    SearchRetrieval() : emailArray(nullptr), emailCount(0), emailsLoaded(false) {}
 
     ~SearchRetrieval() {
         delete[] emailArray;
     }
 
     // Load emails from CSV file into an array
-    void loadEmailsFromCSV(const string& filename) {
+    void loadEmailsFromCSV(const string& filename = "emails.csv") {
         ifstream file(filename);
+        if (!file.is_open()) {
+            cerr << "Error: Could not open file " << filename << endl;
+            return;
+        }
+
         string line;
         emailCount = 0;
 
-        // Count lines to determine array size
+        // Skip header row
+        getline(file, line); // Read and discard the header row
+
+        // Debug: Initial message
+        cout << "Loading emails..." << endl;
+
+        // Count remaining lines to determine email count
         while (getline(file, line)) emailCount++;
         file.clear();
         file.seekg(0);
 
-        // Allocate email array
+        // Skip header again before actual loading
+        getline(file, line); 
+
+        // Allocate memory for the email array
         emailArray = new Email[emailCount];
         int index = 0;
 
+        // Parse each line to create Email objects
         while (getline(file, line)) {
             istringstream ss(line);
             string sender, recipient, subject, content, timeStr, priorityStr;
@@ -175,23 +193,25 @@ public:
                 time_t timestamp = stoi(timeStr);
                 int priority = stoi(priorityStr);
                 emailArray[index++] = Email(sender, recipient, subject, content, timestamp, priority);
-            } catch (const invalid_argument& e) {
+            } catch (const exception& e) {
                 cerr << "Error parsing line: " << line << endl;
-                cerr << "Invalid argument: " << e.what() << endl;
-                continue;
-            } catch (const out_of_range& e) {
-                cerr << "Error parsing line: " << line << endl;
-                cerr << "Out of range error: " << e.what() << endl;
+                cerr << "Exception: " << e.what() << endl;
                 continue;
             }
         }
+
+        emailsLoaded = true;
         file.close();
+
     }
 
 
 
     // Display search menu to user and perform the selected search
-    void searchMenu() {
+    void searchMenu(const string& userEmail) {
+        if (!emailsLoaded) {
+            loadEmailsFromCSV();  // Automatically load emails from default file if not already loaded
+        }
         while (true) {
             cout << "\n--- Email Search Menu ---" << endl;
             cout << "1. Display emails chronologically (oldest to latest)" << endl;
@@ -209,16 +229,13 @@ public:
 
             switch (choice) {
                 case 1:
-                    displayChronological();
+                    displayChronological(userEmail);
                     break;
                 case 2:
-                    displayReverseChronological();
+                    displayReverseChronological(userEmail);
                     break;
                 case 3: {
-                    cout << "Enter sender email to search: ";
-                    string sender;
-                    getline(cin, sender);
-                    searchBySender(sender);
+                    searchBySender(userEmail);
                     break;
                 }
                 case 4: {
@@ -232,14 +249,14 @@ public:
                     cout << "Enter priority level (0 for spam, 1 for normal, 2 for urgent): ";
                     int priorityLevel;
                     cin >> priorityLevel;
-                    searchByPriority(priorityLevel);
+                    searchByPriority(priorityLevel, userEmail);
                     break;
                 }
                 case 6: {
                     cout << "Enter keyword to search in subject/content: ";
                     string keyword;
                     getline(cin, keyword);
-                    searchByKeyword(keyword);
+                    searchByKeyword(keyword, userEmail);
                     break;
                 }
                 case 7:
@@ -252,17 +269,21 @@ public:
     }
 
 
-    // Display emails in a queue (chronological order: oldest to latest)
-    void displayChronological() {
-        Queue chronologicalQueue;
+    // Function to display emails in chronological order
+    void displayChronological(const string& userEmail) {
+        Queue chronologicalQueue;  // Create a queue to hold the emails for chronological order
 
+        // Enqueue all emails from or to the logged-in user
         for (int i = 0; i < emailCount; ++i) {
-            chronologicalQueue.enqueue(emailArray[i]);
+            if (emailArray[i].getSender() == userEmail || emailArray[i].getRecipient() == userEmail) {
+                chronologicalQueue.enqueue(emailArray[i]);
+            }
         }
 
         int count = 0;
         while (!chronologicalQueue.isEmpty()) {
-            displayEmail(chronologicalQueue.dequeue());
+            Email email = chronologicalQueue.dequeue();
+            displayEmail(email);
             count++;
 
             if (count % 5 == 0) {
@@ -274,16 +295,20 @@ public:
         }
     }
 
-    void displayReverseChronological() {
-        Stack reverseChronologicalStack;
+    void displayReverseChronological(const string& userEmail) {
+        Queue reverseQueue;  // Create a queue to hold the emails in reverse order
 
-        for (int i = 0; i < emailCount; ++i) {
-            reverseChronologicalStack.push(emailArray[i]);
+        // Enqueue all emails from or to the logged-in user
+        for (int i = emailCount - 1; i >= 0; --i) {
+            if (emailArray[i].getSender() == userEmail || emailArray[i].getRecipient() == userEmail) {
+                reverseQueue.enqueue(emailArray[i]);
+            }
         }
 
         int count = 0;
-        while (!reverseChronologicalStack.isEmpty()) {
-            displayEmail(reverseChronologicalStack.pop());
+        while (!reverseQueue.isEmpty()) {
+            Email email = reverseQueue.dequeue();
+            displayEmail(email);
             count++;
 
             if (count % 5 == 0) {
@@ -296,11 +321,11 @@ public:
     }
 
     // Search emails by sender
-    void searchBySender(const string& sender) {
+    void searchBySender(const string& userEmail) {
         int count = 0;
 
         for (int i = 0; i < emailCount; ++i) {
-            if (emailArray[i].getSender() == sender) {  // Updated to use getSender()
+            if (emailArray[i].getSender() == userEmail || emailArray[i].getRecipient() == userEmail) {
                 displayEmail(emailArray[i]);
                 count++;
 
@@ -313,6 +338,7 @@ public:
             }
         }
     }
+
 
     // Search emails by recipient
 void searchByRecipient(const string& recipient) {
@@ -334,41 +360,13 @@ void searchByRecipient(const string& recipient) {
 }
 
     // Search emails by priority (1 for urgent, 0 for spam)
-    void searchByPriority(int priorityLevel) {
-        if (priorityLevel < 0 || priorityLevel > 2) {
-            cout << "Invalid priority level. Please enter 0 for spam, 1 for normal, or 2 for urgent." << endl;
-            return;
-        }
-
-        Stack priorityStack;
-        for (int i = 0; i < emailCount; ++i) {
-            if (emailArray[i].getPriority() == priorityLevel) {  
-                priorityStack.push(emailArray[i]);
-            }
-        }
-
-        int count = 0;
-        while (!priorityStack.isEmpty()) {
-            displayEmail(priorityStack.pop());
-            count++;
-
-            if (count % 5 == 0) {
-                char choice;
-                cout << "\nPress 'N' to view the next 5 emails or 'X' to exit: ";
-                cin >> choice;
-                if (choice == 'X' || choice == 'x') break;
-            }
-        }
-    }
-
-
-    // Search emails by a keyword in the subject or content
-    void searchByKeyword(const string& keyword) {
+    void searchByPriority(int priorityLevel, const string& userEmail) {
         int count = 0;
 
         for (int i = 0; i < emailCount; ++i) {
-            if (emailArray[i].getSubject().find(keyword) != string::npos || 
-                emailArray[i].getContent().find(keyword) != string::npos) {  
+            // Only show emails that match the priority and are from or to the logged-in user
+            if (emailArray[i].getPriority() == priorityLevel && 
+                (emailArray[i].getSender() == userEmail || emailArray[i].getRecipient() == userEmail)) {
                 displayEmail(emailArray[i]);
                 count++;
 
@@ -381,6 +379,30 @@ void searchByRecipient(const string& recipient) {
             }
         }
     }
+
+
+    // Function to search for emails by keyword
+    void searchByKeyword(const string& keyword, const string& userEmail) {
+        int count = 0;
+
+        for (int i = 0; i < emailCount; ++i) {
+            // Only show emails that contain the keyword and are from or to the logged-in user
+            if ((emailArray[i].getSubject().find(keyword) != string::npos ||
+                emailArray[i].getContent().find(keyword) != string::npos) && 
+                (emailArray[i].getSender() == userEmail || emailArray[i].getRecipient() == userEmail)) {
+                displayEmail(emailArray[i]);
+                count++;
+
+                if (count % 5 == 0) {
+                    char choice;
+                    cout << "\nPress 'N' to view the next 5 emails or 'X' to exit: ";
+                    cin >> choice;
+                    if (choice == 'X' || choice == 'x') break;
+                }
+            }
+        }
+    }
+
 
 private:
     // Display a single email's details
