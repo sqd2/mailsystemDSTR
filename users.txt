@@ -1,1 +1,13 @@
 salem@male.com zigg
+salem@male.com,zigg
+alice.wonder@dstr.com,forestcat42
+bob.miller@dstr.com,yellowdog78
+charlie.smith@dstr.com,redapple93
+diana.jones@dstr.com,bluebird21
+ethan.hunt@dstr.com,silverfox56
+fiona.green@dstr.com,orangetree67
+george.wilson@dstr.com,blackbear34
+hannah.lee@dstr.com,goldenfish88
+ian.white@dstr.com,purplefrog15
+julia.brown@dstr.com,greentiger49
+test@mail.com,123
