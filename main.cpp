@@ -4,13 +4,21 @@
 #include "Email.hpp"
 #include "SpamQueue.hpp"
 #include "PriorityMail.hpp"
+#include <iostream>
+#include <fstream>
+#include <string>
 
 using namespace std;
+
 
 
 int main() {
     UserAuth auth;
     EmailSystem emailSystem;
+    PriorityMail priorityMail;
+    SpamQueue spamQueue;
+
+
     char choice;
     bool programRunning = true;
     
@@ -54,7 +62,9 @@ int main() {
             cout << "1. View Inbox\n";
             cout << "2. View Outbox\n";
             cout << "3. Send Email\n";
-            cout << "4. Exit to Menu\n";
+            cout << "4. Spam Inbox\n";
+            cout << "5. Priority Mail\n";
+            cout << "6. Exit to Menu\n";
             cout << "Choice: ";
             
             cin >> choice;
@@ -70,20 +80,23 @@ int main() {
                 case '3':
                     emailSystem.sendEmail();
                     break;
-                case 4: {
-                    SpamQueue spamQueue;
-                    spamQueue.loadSpamWords("spam_words.txt"); // Load spam words from a file
-                    spamQueue.readAndFilterEmails("emails.csv", auth.getEmail());
+                case '4': 
                     cout << "\n--- Spam Emails ---" << endl;
-                    spamQueue.display();
-                    break; }
-                case 5: {
-                    PriorityMail priorityMail;
-                    priorityMail.readAndFilterEmails("emails.csv", auth.getEmail());
+                    if (spamQueue.isEmpty()) {
+                        cout << "No spam emails found." << endl;
+                    } else {
+                        spamQueue.display();
+                    }
+                    break; 
+                case '5': 
                     cout << "\n--- Priority Emails ---" << endl;
-                    priorityMail.display();
-                    break; }
-                case '4':
+                    if (priorityMail.isEmpty()) {
+                        cout << "No priority emails found." << endl;
+                    } else {
+                        priorityMail.display();
+                    }
+                    break;
+                case '6':
                     emailMenuRunning = false;  //return to login
                     break;
                 default:
