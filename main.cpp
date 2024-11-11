@@ -2,6 +2,8 @@
 #include "UserAuth.hpp"
 #include "InboxOutbox.hpp"
 #include "Email.hpp"
+#include "SpamQueue.hpp"
+#include "PriorityMail.hpp"
 
 using namespace std;
 
@@ -68,6 +70,19 @@ int main() {
                 case '3':
                     emailSystem.sendEmail();
                     break;
+                case 4: {
+                    SpamQueue spamQueue;
+                    spamQueue.loadSpamWords("spam_words.txt"); // Load spam words from a file
+                    spamQueue.readAndFilterEmails("emails.csv", auth.getEmail());
+                    cout << "\n--- Spam Emails ---" << endl;
+                    spamQueue.display();
+                    break; }
+                case 5: {
+                    PriorityMail priorityMail;
+                    priorityMail.readAndFilterEmails("emails.csv", auth.getEmail());
+                    cout << "\n--- Priority Emails ---" << endl;
+                    priorityMail.display();
+                    break; }
                 case '4':
                     emailMenuRunning = false;  //return to login
                     break;
