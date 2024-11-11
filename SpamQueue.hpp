@@ -1,3 +1,4 @@
+//USMAN ALI KHAN - TP073099
 #ifndef SPAM_QUEUE_HPP
 #define SPAM_QUEUE_HPP
 
@@ -62,7 +63,7 @@ public:
                 }
                 current->next = newNode;
             }
-            cout << "[DEBUG] Loaded spam word: " << word << endl;
+            
         }
         file.close();
     }
@@ -75,7 +76,7 @@ public:
             rear->next = newNode;
             rear = newNode;
         }
-        cout << "[DEBUG] Enqueued spam email from " << email.getSender() << " to " << email.getRecipient() << endl;
+        
     }
 
     bool isEmpty() const {
@@ -100,7 +101,6 @@ public:
         SpamWordNode* current = spamWordsHead;
         while (current != nullptr) {
             if (text.find(current->spamWord) != string::npos) {
-                cout << "[DEBUG] Found spam word in text: " << current->spamWord << endl;
                 return true;
             }
             current = current->next;

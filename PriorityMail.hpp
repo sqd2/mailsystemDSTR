@@ -1,3 +1,4 @@
+//USMAN ALI KHAN - TP073099
 #ifndef PRIORITY_MAIL_HPP
 #define PRIORITY_MAIL_HPP
 
@@ -48,7 +49,7 @@ public:
             newNode->next = current->next;
             current->next = newNode;
         }
-        cout << "[DEBUG] Enqueued priority email from " << email.getSender() << " to " << email.getRecipient() << endl;
+
     }
 
     bool isEmpty() const {
