@@ -391,7 +391,15 @@ private:
         cout << "Subject: " << email.getSubject() << endl;
         cout << "Content: " << email.getContent() << endl;
         cout << "Timestamp: " << email.getFormattedTime() << endl;
-        cout << "Priority: " << email.getPriority() << endl;
+        // Convert priority level to text
+        string priorityText;
+        switch (email.getPriority()) {
+            case 0: priorityText = "Spam"; break;
+            case 1: priorityText = "Normal"; break;
+            case 2: priorityText = "Urgent"; break;
+            default: priorityText = "Unknown"; break;
+        }
+        cout << "Priority: " << priorityText << endl;
         cout << "---------------------------" << endl;
     }
 };
