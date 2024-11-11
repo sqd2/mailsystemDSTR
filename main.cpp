@@ -1,24 +1,34 @@
-//SALEM AHMED ABDULLAH BA SUHAI - TP073526
 #include "UserAuth.hpp"
 #include "InboxOutbox.hpp"
 #include "Email.hpp"
+#include "searchRetrieval.hpp"
 #include "SpamQueue.hpp"
 #include "PriorityMail.hpp"
-#include <iostream>
-#include <fstream>
-#include <string>
+#include "Email.hpp"
 
 using namespace std;
 
-
+char validChoice() {
+    char input[256];
+    char ch;
+    int i = 0;
+    while ((ch = cin.get()) != '\n' && i < 255) { //read characters until newline
+        input[i++] = ch;
+    }
+    input[i] = '\0';  //null-terminate
+    //check for input being a char
+    if (i != 1) {
+        return '\0';  //return null for invalid
+    }
+    return input[0];
+}
 
 int main() {
     UserAuth auth;
     EmailSystem emailSystem;
-    PriorityMail priorityMail;
-    SpamQueue spamQueue;
-
-
+    //PriorityMail priorityMail;
+    //SpamQueue spamQueue;
+    SearchRetrieval search;
     char choice;
     bool programRunning = true;
     
@@ -29,8 +39,13 @@ int main() {
         while (!authenticated) {
             cout << "=== Welcome to Email System ===" << endl;
             cout << "1. Login\n2. Register\n3. Exit\nChoice: ";
-            cin >> choice;
-            cin.ignore();
+            
+            choice = validChoice();
+
+            if (choice == '\0') {
+                cout << "Invalid input! Please enter a single character (1-3)." << endl;
+                continue;
+            }
 
             switch (choice) {
                 case '1':
@@ -40,10 +55,10 @@ int main() {
                     authenticated = auth.registerUser();
                     break;
                 case '3':
-                     cout << "terminate" << endl;
+                    cout << "terminating..." << endl;
                     return 0; //terminate
                 default:
-                    cout << "Invalid choice!" << endl;
+                    cout << "Invalid choice! Please enter 1, 2, or 3." << endl;
                     continue;
             }
 
@@ -62,13 +77,18 @@ int main() {
             cout << "1. View Inbox\n";
             cout << "2. View Outbox\n";
             cout << "3. Send Email\n";
-            cout << "4. Spam Inbox\n";
-            cout << "5. Priority Mail\n";
-            cout << "6. Exit to Menu\n";
+            cout << "4. View Spam\n";
+            cout << "5. View Priority\n";
+            cout << "6. Search and retreive Email\n";
+            cout << "7. Exit to Menu\n";
             cout << "Choice: ";
             
-            cin >> choice;
-            cin.ignore();
+            choice = validChoice();
+
+            if (choice == '\0') {
+                cout << "Invalid input! Please enter a single character (1-4)." << endl;
+                continue;
+            }
 
             switch (choice) {
                 case '1':
@@ -81,26 +101,25 @@ int main() {
                     emailSystem.sendEmail();
                     break;
                 case '4': 
+                    /*spamQueue.loadSpamWords("spam_words.txt"); // Load spam words from a file
+                    spamQueue.readAndFilterEmails("emails.csv", auth.getEmail());
                     cout << "\n--- Spam Emails ---" << endl;
-                    if (spamQueue.isEmpty()) {
-                        cout << "No spam emails found." << endl;
-                    } else {
-                        spamQueue.display();
-                    }
-                    break; 
+                    spamQueue.display();
+                    break;*/
+            
                 case '5': 
+                    /*priorityMail.readAndFilterEmails("emails.csv", auth.getEmail());
                     cout << "\n--- Priority Emails ---" << endl;
-                    if (priorityMail.isEmpty()) {
-                        cout << "No priority emails found." << endl;
-                    } else {
-                        priorityMail.display();
-                    }
-                    break;
+                    priorityMail.display();
+                    break;*/
                 case '6':
+                    search.searchMenu(auth.getEmail());
+                    break;
+                case '7':
                     emailMenuRunning = false;  //return to login
                     break;
                 default:
-                    cout << "Invalid choice!\n";
+                    cout << "Invalid choice!" << endl;
             }
         }
     }
