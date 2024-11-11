@@ -101,17 +101,9 @@ int main() {
                     emailSystem.sendEmail();
                     break;
                 case '4': 
-                    /*spamQueue.loadSpamWords("spam_words.txt"); // Load spam words from a file
-                    spamQueue.readAndFilterEmails("emails.csv", auth.getEmail());
-                    cout << "\n--- Spam Emails ---" << endl;
                     spamQueue.display();
-                    break;*/
-            
                 case '5': 
-                    /*priorityMail.readAndFilterEmails("emails.csv", auth.getEmail());
-                    cout << "\n--- Priority Emails ---" << endl;
                     priorityMail.display();
-                    break;*/
                 case '6':
                     search.searchMenu(auth.getEmail());
                     break;
