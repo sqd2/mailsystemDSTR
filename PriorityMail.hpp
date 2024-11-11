@@ -2,9 +2,10 @@
 #define PRIORITY_MAIL_HPP
 
 #include "Email.hpp"
+#include <stdexcept>
+#include <iostream>
 #include <fstream>
 #include <sstream>
-
 using namespace std;
 
 struct PriorityNode {
@@ -29,7 +30,12 @@ public:
         }
     }
 
+    // Only enqueue emails with priority 2
     void enqueue(const Email& email) {
+        if (email.getPriority() != 2) {
+            return;  // Ignore emails with priority other than 2
+        }
+
         PriorityNode* newNode = new PriorityNode(email);
         if (head == nullptr || email.getPriority() > head->email.getPriority()) {
             newNode->next = head;
@@ -42,6 +48,7 @@ public:
             newNode->next = current->next;
             current->next = newNode;
         }
+        cout << "[DEBUG] Enqueued priority email from " << email.getSender() << " to " << email.getRecipient() << endl;
     }
 
     bool isEmpty() const {
@@ -80,8 +87,8 @@ public:
             ss.ignore(1); // Skip the comma
             ss >> priority;
 
-            // Only enqueue emails that are of higher priority, exclude the least priority (e.g., priority == 1)
-            if (recipient == currentRecipient && priority > 1) {
+            // Only enqueue emails for the current recipient with priority 2
+            if (recipient == currentRecipient && priority == 2) {
                 enqueue(Email(sender, recipient, subject, content, timestamp, priority));
             }
         }
@@ -89,13 +96,22 @@ public:
     }
 
     void display() const {
+        if (isEmpty()) {
+            cout << "No priority emails found." << endl;
+            return;
+        }
+        
         PriorityNode* current = head;
+        cout << "\n--- Priority Emails ---" << endl;
         while (current != nullptr) {
             const Email& email = current->email;
-            cout << "From: " << email.getSender() << ", Subject: " << email.getSubject() << ", Priority: " << email.getPriority() << ", Time: " << email.getFormattedTime() << endl;
+            cout << "From: " << email.getSender()
+                 << ", Subject: " << email.getSubject()
+                 << ", Priority: " << email.getPriority()
+                 << ", Time: " << email.getFormattedTime() << endl;
             current = current->next;
         }
     }
 };
 
-#endif
+#endif // PRIORITY_MAIL_HPP
