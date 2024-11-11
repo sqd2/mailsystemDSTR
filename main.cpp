@@ -1,3 +1,4 @@
+//SALEM AHMED ABDULLAH BA SUHAI - TP073526
 #include "UserAuth.hpp"
 #include "InboxOutbox.hpp"
 #include "Email.hpp"
@@ -26,11 +27,13 @@ char validChoice() {
 int main() {
     UserAuth auth;
     EmailSystem emailSystem;
-    //PriorityMail priorityMail;
-    //SpamQueue spamQueue;
+    PriorityMail priorityMail;
+    SpamQueue spamQueue;
     SearchRetrieval search;
     char choice;
     bool programRunning = true;
+
+    spamQueue.loadSpamWords("spam_words.txt");
     
     while (programRunning) {
         bool authenticated = false;
@@ -69,6 +72,9 @@ int main() {
         
         cout << "\nWelcome, " << auth.getEmail() << "!" << endl;
         emailSystem.setCurrentUser(auth.getEmail());
+        spamQueue.readAndFilterEmails("emails.csv", auth.getEmail());
+        priorityMail.readAndFilterEmails("emails.csv", auth.getEmail());
+
 
         //email system menu
         bool emailMenuRunning = true;
@@ -102,8 +108,10 @@ int main() {
                     break;
                 case '4': 
                     spamQueue.display();
+                    break;
                 case '5': 
                     priorityMail.display();
+                    break;
                 case '6':
                     search.searchMenu(auth.getEmail());
                     break;
