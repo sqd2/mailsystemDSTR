@@ -4,8 +4,15 @@
 #include "Email.hpp"
 #include <fstream>
 #include <sstream>
-
+#include <stdexcept>
 using namespace std;
+
+struct SpamWordNode {
+    string spamWord;
+    SpamWordNode* next;
+
+    SpamWordNode(const string& word) : spamWord(word), next(nullptr) {}
+};
 
 struct SpamNode {
     Email email;
@@ -18,22 +25,20 @@ class SpamQueue {
 private:
     SpamNode* front;
     SpamNode* rear;
-    SpamNode* spamWordsHead; // Linked list to store spam words
+    SpamWordNode* spamWordsHead; // Linked list to store spam words
 
 public:
     SpamQueue() : front(nullptr), rear(nullptr), spamWordsHead(nullptr) {}
 
     ~SpamQueue() {
-        // Clean up email queue
         while (front != nullptr) {
             SpamNode* temp = front;
             front = front->next;
             delete temp;
         }
 
-        // Clean up spam words linked list
         while (spamWordsHead != nullptr) {
-            SpamNode* temp = spamWordsHead;
+            SpamWordNode* temp = spamWordsHead;
             spamWordsHead = spamWordsHead->next;
             delete temp;
         }
@@ -47,16 +52,17 @@ public:
 
         string word;
         while (getline(file, word)) {
-            SpamNode* newNode = new SpamNode(Email("", "", word, "", 0, 0)); // Store word in `subject` field
+            SpamWordNode* newNode = new SpamWordNode(word);
             if (spamWordsHead == nullptr) {
                 spamWordsHead = newNode;
             } else {
-                SpamNode* current = spamWordsHead;
+                SpamWordNode* current = spamWordsHead;
                 while (current->next != nullptr) {
                     current = current->next;
                 }
                 current->next = newNode;
             }
+            cout << "[DEBUG] Loaded spam word: " << word << endl;
         }
         file.close();
     }
@@ -69,6 +75,7 @@ public:
             rear->next = newNode;
             rear = newNode;
         }
+        cout << "[DEBUG] Enqueued spam email from " << email.getSender() << " to " << email.getRecipient() << endl;
     }
 
     bool isEmpty() const {
@@ -90,10 +97,10 @@ public:
     }
 
     bool containsSpamWords(const string& text) const {
-        SpamNode* current = spamWordsHead;
+        SpamWordNode* current = spamWordsHead;
         while (current != nullptr) {
-            // Check if the text contains the spam word stored in `subject` of SpamNode
-            if (text.find(current->email.getSubject()) != string::npos) {
+            if (text.find(current->spamWord) != string::npos) {
+                cout << "[DEBUG] Found spam word in text: " << current->spamWord << endl;
                 return true;
             }
             current = current->next;
@@ -122,7 +129,6 @@ public:
             ss.ignore(1); // Skip the comma
             ss >> priority;
 
-            // Check if the recipient matches and if the subject or content contains spam words
             if (recipient == currentRecipient && (containsSpamWords(subject) || containsSpamWords(content))) {
                 enqueue(Email(sender, recipient, subject, content, timestamp, priority));
             }
@@ -131,13 +137,21 @@ public:
     }
 
     void display() const {
+        if (isEmpty()) {
+            cout << "No spam emails found." << endl;
+            return;
+        }
+
         SpamNode* current = front;
+        cout << "\n--- Spam Emails ---" << endl;
         while (current != nullptr) {
             const Email& email = current->email;
-            cout << "From: " << email.getSender() << ", Subject: " << email.getSubject() << ", Time: " << email.getFormattedTime() << endl;
+            cout << "From: " << email.getSender()
+                 << ", Subject: " << email.getSubject()
+                 << ", Time: " << email.getFormattedTime() << endl;
             current = current->next;
         }
     }
 };
 
-#endif
+#endif // SPAM_QUEUE_HPP
